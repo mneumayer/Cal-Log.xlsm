@@ -1,0 +1,249 @@
+Sub Auto_Open()
+'
+' Macro1 Macro
+'
+
+'Cells(1,1).Value is Today()
+Dim a As Integer
+Dim b As Integer
+Dim c As Integer
+Dim code As String
+Dim d As String
+Dim thism As Integer
+Dim nextm As Integer
+Dim threem As Integer
+Dim overdue As Integer
+
+Worksheets("Master List").Activate
+
+
+a = 6
+c = 0
+
+
+
+
+
+Do While True
+
+Range("G" & a).Select
+
+d = Range("G" & a).Value
+
+If d = "ALLDONE" Then
+Exit Do
+End If
+
+If d = "Calibration Due Date" Then
+
+GoTo NextLoop
+
+End If
+
+b = DateDiff("m", Range("A1"), Range("G" & a))
+
+On Error Resume Next
+
+If b = 0 Then
+    
+    code = "This Month"
+   
+End If
+
+
+If b = 1 Then
+    
+    code = "Next Month"
+
+End If
+
+
+If b = 2 Then
+    
+    code = "Two Months"
+        
+End If
+        
+
+If b = 3 Then
+    
+    code = "Three Months"
+
+End If
+
+ 
+                
+If b > 3 Then
+    
+    code = "Calibration Good"
+    
+End If
+    
+
+If b < 0 Or d = "Out Of Service" Then
+    
+    code = "Should Be Out Of Service"
+ 
+     If Range("E" & a).Value = "In Service" Then
+        code = "Pass Due"
+   
+     End If
+
+End If
+
+If Range("E" & a).Value = "Reference Only" Then
+    
+    code = "Reference Only"
+
+End If
+
+
+
+Range("K" & a).Value = code
+
+NextLoop:
+
+a = a + 1
+b = 4
+
+
+Loop
+
+Application.DisplayAlerts = False
+
+''Save Current Work Book
+ThisWorkbook.Save
+
+''save other Workbook with macros disabled
+ActiveSheet.Copy
+Set NewWb = ActiveWorkbook
+Range("A2").Value = "Calibration Report " & Range("A1").Value
+NewWb.SaveAs "N:\25 Struct Transp Lab\Calibration Records\Calibration\CalReport.xlsx", FileFormat:=51, CreateBackup:=False
+NewWb.Close False
+Set NewWb = Nothing
+
+
+''Send email with CalReport.xls
+
+
+Call Mail_Workbook_1(thism, nextm, threem, overdue)
+
+Application.Quit
+
+
+End Sub
+
+Sub Mail_Workbook_1(thism As Integer, nextm As Integer, threem As Integer, overdue As Integer)
+
+' Works in Excel 2000, Excel 2002, Excel 2003, Excel 2007, Excel 2010, Outlook 2000, Outlook 2002, Outlook 2003, Outlook 2007, Outlook 2010.
+' This example sends the last saved version of the Activeworkbook object .
+    Dim OutApp As Object
+    Dim OutMail As Object
+    Dim a As Integer
+    Dim b As String
+    Dim c As String
+    Dim d As String
+    Dim e As String
+    Dim ThisDscrpt As String
+    Dim NextDscrpt As String
+    Dim OverDscrpt As String
+
+    
+    'Dim thism As Integer
+    'Dim nextm As Integer
+    'Dim threem As Integer
+    
+    a = 6
+
+    Worksheets("Master List").Activate
+
+    Do While True
+    
+    Range("K" & a).Select
+    
+    
+    b = Range("K" & a).Value
+    
+    c = Range("A" & a).Value
+    
+    d = Range("G" & a).Value
+    
+    e = Range("E" & a).Value
+    
+    
+    On Error Resume Next
+    
+    If b = "ALLDONE" Then
+        Exit Do
+    End If
+    
+    
+    If e = "In Service" Then
+    
+        If b = "This Month" Then
+            thism = thism + 1
+            ThisDscrpt = ThisDscrpt & c & "   " & " (due " & d & ")" & vbLf & "        "
+        End If
+    
+    
+        If b = "Next Month" Then
+            nextm = nextm + 1
+            NextDscrpt = NextDscrpt & c & "   " & " (due " & d & ")" & vbLf & "        "
+        End If
+    
+        If b = "Three Months" Then
+            threem = threem + 1
+        End If
+    
+        If b = "Pass Due" Then
+            overdue = overdue + 1
+            OverDscrpt = OverDscrpt & c & "   " & " (due " & d & ")" & vbLf & "        "
+        End If
+
+    End If
+   
+     a = a + 1
+    
+    
+    Loop
+    
+    
+    Set OutApp = CreateObject("Outlook.Application")
+    Set OutMail = OutApp.CreateItem(0)
+
+    On Error Resume Next
+   ' Change the mail address and subject in the macro before you run it.
+    With OutMail
+         .To = "email@gmail.com"
+        
+        
+        
+        
+        .CC = ""
+        .BCC = ""
+        .Subject = "Monthly CalReport.xlsx "
+        .Body = "This is an auto generated email." & vbLf & vbLf & _
+                "There are " & overdue & " item(s) that are Overdue:" & vbLf & _
+                 "        " & OverDscrpt & " " & vbLf & _
+                 "There are " & thism & " item(s) that need to be calibrated this Month:" & vbLf & _
+                 "        " & ThisDscrpt & " " & vbLf & _
+                 "There are " & nextm & " item(s) that are due for calibration next Month:" & vbLf & _
+                 "        " & NextDscrpt & " " & vbLf & _
+                 "There are " & threem & " item(s) that are due for calibration in three Months." & vbLf & _
+                 vbLf & "CalReport.xlsx is a copy of Cal Log.xlsm and can be modified."
+        ' You can add other files by uncommenting the following line.
+        .Attachments.Add ("N:\25 Struct Transp Lab\Calibration Records\Calibration\CalReport.xlsx")
+        ' In place of the following statement, you can use ".Display" to
+        ' display the mail.
+        .Send
+    End With
+    On Error GoTo 0
+
+    Set OutMail = Nothing
+    Set OutApp = Nothing
+End Sub
+
+
+
+
+
