@@ -1,6 +1,6 @@
 # Cal Log.xlsm
 
-* This is an Excel document I made to keep track of calibrated instruments 
+* This is an Excel document I made to keep track of calibrated instruments.
 
 ## How to run
 * Download the file and open Cal log.xlsm.
