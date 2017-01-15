@@ -1,27 +1,35 @@
 # Cal Log.xlsm
 
+* This is an Excel document I made to keep track of calibrated instruments 
 
-This is an Excel document I made to keep track of calibrated devices at work. 
+## How to run
+* Download the file and open Cal log.xlsm.
+* The macro executes as soon as the file is opened. 
+* When used with Window’s “Task Scheduler” you can have it execute whenever you want. 
 
-The macro executes as soon as the file is opened.
+## How to open an excel document t without the macro going off.
+* Open Excel then open your Excel documnet with the Cal Log macro install while holding “Shift” at the same time to stop the Marco from executing.
 
-When used with Window’s “Task Scheduler” you can have it execute automatically whenever you want. 
-
-Open Excel then open the Cal Log in Excel while holding “Shift” at the same time to stop the Marco from executing.
-
-Once the spreadsheet is opened the macro looks at every calibration due date then compares it to the date on the computer 
+## How does it work?
+1. Once the spreadsheet is opened the macro looks at every calibration due date then compares it to the date on the computer 
 and determines what is the urgency is; This Month, Next Month, Two Months, Three Months, Calibration Good, Out Of Service,
-Should Be Out Of Service, Reference Only, and In Service. 
+Should Be Out Of Service, Reference Only, and In Service.
 
-The macro then saves a copy of itself calling it CalReport.xlsm without the macro so you can open the copy without executing the macro.
+2. The macro then saves a copy of itself calling it CalReport.xlsm without the macro so you can open the copy without executing the macro.
 
-Then it sends an email with the CalReport and the email documenting all of the items that need to be addressed.
+3. Then it sends an email with the CalReport and the email documenting all of the items that need to be addressed.
 
-Then saves changes then closes Excel.
+4. Then saves changes then closes Excel.
 
-*
-Auto_Open() is the macro.
+# How to install in my own Excel document?
+* Auto_Open() is the macro.
+* Cal Log.xlsm is the Excel spreadsheet with Auto_Open() embedded in it.
+* Copy and paste the code into your own macro with the name Auto_Open()(Auto_Open() Tell excel the macro start when the excel sheet is opened).
 
-Cal Log.xlsm is the Excel spreadsheet with Auto_Open() embedded in it.
 
-*
+
+
+
+
+
+
